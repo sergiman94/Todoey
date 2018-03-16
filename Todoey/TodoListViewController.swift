@@ -36,10 +36,23 @@ class TodoListViewController: UITableViewController {
         
     }
     
+    // cuando se ha seleccionado una fila
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(indexPath.row)
+        // imprimimos en consola la fila que hemos selccionado
+        print(itemArray[indexPath.row])
         
+        // no dejamos seleccionada cada fila que oprimimos
         tableView.deselectRow(at: indexPath, animated: true)
+        
+         // si ya marcamos con un accesorio (chulo) la fila que hemos seleccionado
+        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
+            // no marque otra vez, quitala
+            tableView.cellForRow(at: indexPath)?.accessoryType = .none
+        }else{
+            // marca
+            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+        }
+        
         
     }
     
