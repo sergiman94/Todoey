@@ -13,9 +13,17 @@ class TodoListViewController: UITableViewController {
     
     var itemArray = ["Find Mike", "Buy Eggos", "Destroy Demogorgon"]
     
+    let defaults = UserDefaults.standard
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        // retroalimentamos la informacion agregada recientemente para que no se borre al momento de terminar la app
+        if let items = defaults.array(forKey: "TodoListArray") as?  [String] {
+            
+            itemArray = items
+        }
+        
     }
     
     // MARK - Tableview Datasource Methods
@@ -73,6 +81,9 @@ class TodoListViewController: UITableViewController {
             
             // insertamos un nuevo item al arreglo con la informacion del textField
             self.itemArray.append(textField.text!)
+            
+            // guardamos las actualizaciones hechas en la aplicacion para que no se borren al momento de terminarla 
+            self.defaults.set(self.itemArray, forKey: "TodoListArray")
             
             // actualizamos la informacion del tableView como tambien la del arreglo con los nuevos items
             self.tableView.reloadData()
