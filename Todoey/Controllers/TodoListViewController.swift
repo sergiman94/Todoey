@@ -13,22 +13,14 @@ class TodoListViewController: UITableViewController {
     
     var itemArray = [Item]()
     
-    let defaults = UserDefaults.standard
+    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        print(dataFilePath)
         
-        let newItem = Item()
-        newItem.title = "Find Mike"
-        newItem.done = true
-        itemArray.append(newItem)
-        
-//        // retroalimentamos la informacion agregada recientemente para que no se borre al momento de terminar la app
-        if let items = defaults.array(forKey: "TodoListArray") as?  [Item] {
-
-            itemArray = items
-        }
+        loadItems()
         
     }
     
@@ -60,12 +52,11 @@ class TodoListViewController: UITableViewController {
         // representacion de la estructura condicional de abajo con el operador ternario
         
         cell.accessoryType = item.done == true ? .checkmark : .none
-        
-//        if item.done == true {
-//            cell.accessoryType = .checkmark
-//        }else{
-//            cell.accessoryType = .none
-//        }
+        //        if item.done == true {
+        //            cell.accessoryType = .checkmark
+        //        }else{
+        //            cell.accessoryType = .none
+        //        }
         
         return cell
         
@@ -77,11 +68,10 @@ class TodoListViewController: UITableViewController {
         
         itemArray[indexPath.row].done = !itemArray[indexPath.row].done
         
+        self.saveItems()
+        
         // imprimimos en consola la fila que hemos selccionado
         print(itemArray[indexPath.row])
-        
-        
-        tableView.reloadData()
         
         
         // no dejamos seleccionada cada fila que oprimimos
@@ -119,11 +109,9 @@ class TodoListViewController: UITableViewController {
             // insertamos un nuevo item al arreglo con la informacion del textField
             self.itemArray.append(newItem)
             
-            // guardamos las actualizaciones hechas en la aplicacion para que no se borren al momento de terminarla 
-            self.defaults.set(self.itemArray, forKey: "TodoListArray")
+            self.saveItems()
             
-            // actualizamos la informacion del tableView como tambien la del arreglo con los nuevos items
-            self.tableView.reloadData()
+            
         }
         
         // entrada de texto donde podemos darle un nombre al nuevo item que se va a agregar
@@ -140,9 +128,44 @@ class TodoListViewController: UITableViewController {
     
     }
     
+    // MARK - Model Manupuation Methods
+    
+    func saveItems(){
+        
+        let encoder = PropertyListEncoder()
+        
+        do{
+            let data = try encoder.encode(self.itemArray)
+            try data.write(to: self.dataFilePath!)
+        } catch{
+            print("Error encoding item array, \(error)")
+        }
+        
+        // actualizamos la informacion del tableView como tambien la del arreglo con los nuevos items
+        self.tableView.reloadData()
+        
+    }
+    
+    func loadItems(){
+        
+        if let data = try? Data(contentsOf: dataFilePath!){
+            
+            let decoder = PropertyListDecoder()
+            
+            do {
+                itemArray = try decoder.decode([Item].self, from: data)
+                
+            }catch{
+                print("Error decoding item array, \(error)")
+            }
+        }
+        
+    }
     
     
 }
+
+
 
 
 

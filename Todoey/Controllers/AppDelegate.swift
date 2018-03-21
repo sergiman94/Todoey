@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         
         // this is for the aplication's path where is the .plist file with all the info 
-        print(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true))
+       
         
         return true
     }
