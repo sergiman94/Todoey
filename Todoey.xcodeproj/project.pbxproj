@@ -12,7 +12,8 @@
 		0431F650205C6BD600CF8443 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0431F64E205C6BD600CF8443 /* Main.storyboard */; };
 		0431F652205C6BD600CF8443 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0431F651205C6BD600CF8443 /* Assets.xcassets */; };
 		0431F655205C6BD600CF8443 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0431F653205C6BD600CF8443 /* LaunchScreen.storyboard */; };
-		0436DCFC2061A78A001B1B2D /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0436DCFB2061A78A001B1B2D /* Item.swift */; };
+		044B48402062AB8B00400934 /* DataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 044B483E2062AB8B00400934 /* DataModel.xcdatamodeld */; };
+		04F97E6B2064164400446C28 /* CategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04F97E6A2064164400446C28 /* CategoryViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,7 +24,8 @@
 		0431F651205C6BD600CF8443 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0431F654205C6BD600CF8443 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0431F656205C6BD600CF8443 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		0436DCFB2061A78A001B1B2D /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
+		044B483F2062AB8B00400934 /* DataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = DataModel.xcdatamodel; sourceTree = "<group>"; };
+		04F97E6A2064164400446C28 /* CategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +58,7 @@
 		0431F649205C6BD600CF8443 /* Todoey */ = {
 			isa = PBXGroup;
 			children = (
+				0431F64A205C6BD600CF8443 /* AppDelegate.swift */,
 				0436DCFE2061A79F001B1B2D /* Controllers */,
 				0436DCFD2061A78E001B1B2D /* DataModel */,
 				0436DCFF2061A7DB001B1B2D /* View */,
@@ -68,7 +71,7 @@
 		0436DCFD2061A78E001B1B2D /* DataModel */ = {
 			isa = PBXGroup;
 			children = (
-				0436DCFB2061A78A001B1B2D /* Item.swift */,
+				044B483E2062AB8B00400934 /* DataModel.xcdatamodeld */,
 			);
 			path = DataModel;
 			sourceTree = "<group>";
@@ -76,7 +79,7 @@
 		0436DCFE2061A79F001B1B2D /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				0431F64A205C6BD600CF8443 /* AppDelegate.swift */,
+				04F97E6A2064164400446C28 /* CategoryViewController.swift */,
 				0431F64C205C6BD600CF8443 /* TodoListViewController.swift */,
 			);
 			path = Controllers;
@@ -163,8 +166,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				04F97E6B2064164400446C28 /* CategoryViewController.swift in Sources */,
 				0431F64D205C6BD600CF8443 /* TodoListViewController.swift in Sources */,
-				0436DCFC2061A78A001B1B2D /* Item.swift in Sources */,
+				044B48402062AB8B00400934 /* DataModel.xcdatamodeld in Sources */,
 				0431F64B205C6BD600CF8443 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -350,6 +354,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		044B483E2062AB8B00400934 /* DataModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				044B483F2062AB8B00400934 /* DataModel.xcdatamodel */,
+			);
+			currentVersion = 044B483F2062AB8B00400934 /* DataModel.xcdatamodel */;
+			path = DataModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 0431F63F205C6BD500CF8443 /* Project object */;
 }

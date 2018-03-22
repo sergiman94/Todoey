@@ -7,20 +7,28 @@
 //
 
 import UIKit
+import CoreData
 
 class TodoListViewController: UITableViewController {
     
     
     var itemArray = [Item]()
     
-    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+    var selectedCategory : Category? {
+        didSet{
+            loadItems()
+        }
+    }
+    
+    
+    // ingresamos al AppDelegate como un objeto y tomamos sus datos (el contexto de la base de datos)
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        print(dataFilePath)
+//        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist"))
         
-        loadItems()
         
     }
     
@@ -66,6 +74,12 @@ class TodoListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         
+        
+        // para eliminar un item del arreglo y de la base de datos primero se borra de la bd y despues del arreglo
+        //        context.delete(itemArray[indexPath.row])
+        //        itemArray.remove(at: indexPath.row)
+        
+        
         itemArray[indexPath.row].done = !itemArray[indexPath.row].done
         
         self.saveItems()
@@ -77,14 +91,14 @@ class TodoListViewController: UITableViewController {
         // no dejamos seleccionada cada fila que oprimimos
         tableView.deselectRow(at: indexPath, animated: true)
         
-//         // si ya marcamos con un accesorio (chulo) la fila que hemos seleccionado
-//        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
-//            // no marque otra vez, quitala
-//            tableView.cellForRow(at: indexPath)?.accessoryType = .none
-//        }else{
-//            // marca
-//            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-//        }
+        //         // si ya marcamos con un accesorio (chulo) la fila que hemos seleccionado
+        //        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
+        //            // no marque otra vez, quitala
+        //            tableView.cellForRow(at: indexPath)?.accessoryType = .none
+        //        }else{
+        //            // marca
+        //            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+        //        }
         
         
     }
@@ -102,15 +116,15 @@ class TodoListViewController: UITableViewController {
             // what will happen once the user clicks the add item button on our alert
             
             
-            let newItem = Item()
+            let newItem = Item(context: self.context)
             newItem.title = textField.text!
-            
+            newItem.parentCategory = self.selectedCategory
+            newItem.done = false
             
             // insertamos un nuevo item al arreglo con la informacion del textField
             self.itemArray.append(newItem)
             
             self.saveItems()
-            
             
         }
         
@@ -125,20 +139,20 @@ class TodoListViewController: UITableViewController {
         alert.addAction(action)
         // mostramos la alerta
         present(alert, animated: true, completion: nil)
-    
+        
     }
     
     // MARK - Model Manupuation Methods
     
+    // guardamos los datos en la base de datos
     func saveItems(){
         
-        let encoder = PropertyListEncoder()
-        
         do{
-            let data = try encoder.encode(self.itemArray)
-            try data.write(to: self.dataFilePath!)
+            
+            try context.save()
+            
         } catch{
-            print("Error encoding item array, \(error)")
+            print("Error saving context, \(error)")
         }
         
         // actualizamos la informacion del tableView como tambien la del arreglo con los nuevos items
@@ -146,25 +160,78 @@ class TodoListViewController: UITableViewController {
         
     }
     
-    func loadItems(){
+    // hacemos unas solicitudes para leer y mostrar los datos, guardamos los items en el arreglo
+    // para que cuando se termine la app sigan persistiendo
+    // la variable request por parametro esta definifa por default para que cuando no se le pase otra variable por parametro no
+    // ejecute un error al igual que predicate - ver video 260 para entender esta funcion 
+    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil){
         
-        if let data = try? Data(contentsOf: dataFilePath!){
-            
-            let decoder = PropertyListDecoder()
-            
-            do {
-                itemArray = try decoder.decode([Item].self, from: data)
-                
-            }catch{
-                print("Error decoding item array, \(error)")
-            }
+        let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", selectedCategory!.name!)
+        
+        
+        if let additionalPredicate = predicate {
+            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [categoryPredicate, additionalPredicate])
+        } else{
+            request.predicate = categoryPredicate
         }
+        
+        do {
+            itemArray =  try context.fetch(request)
+        } catch  {
+            print("Error fetching data from context, \(error)")
+        }
+        
+        tableView.reloadData()
+        
+    }
+    
+}
+
+
+// MARK _ Search Bar Methods
+
+extension TodoListViewController : UISearchBarDelegate {
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
+        // hacemos una solicitud para ingresar al arreglo de items
+        let request : NSFetchRequest<Item> = Item.fetchRequest()
+        
+        // hacemos una consulta con el predicate, el string es muy importante ya que es texto libre
+        // consultamos que el titulo del item contenga un valor
+        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+        
+        
+        // organizamos el resultado de la consulta en orden alfabetico
+        let sortDescriptor = NSSortDescriptor(key: "title", ascending: true )
+        request.sortDescriptors = [sortDescriptor]
+        
+        // cargamos los itmes que se desean encontrar en la consulta con respecto a este request
+        loadItems(with: request, predicate: predicate)
+        
+        // actualizamos cambios 
+        tableView.reloadData()
         
     }
     
     
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        if searchBar.text?.count == 0 {
+            
+            loadItems()
+            
+            DispatchQueue.main.async {
+                searchBar.resignFirstResponder()
+            }
+            
+        }
+    }
+    
+    
+    
+    
 }
-
 
 
 
