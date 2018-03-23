@@ -163,7 +163,7 @@ class TodoListViewController: UITableViewController {
     // hacemos unas solicitudes para leer y mostrar los datos, guardamos los items en el arreglo
     // para que cuando se termine la app sigan persistiendo
     // la variable request por parametro esta definifa por default para que cuando no se le pase otra variable por parametro no
-    // ejecute un error al igual que predicate - ver video 260 para entender esta funcion 
+    // ejecute un error al igual que predicate - ver video 260 para entender esta funcion
     func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil){
         
         let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", selectedCategory!.name!)
