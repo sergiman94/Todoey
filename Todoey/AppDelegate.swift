@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import RealmSwift
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,9 +17,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // priemera funcion que se ejecuta en toda la aplicacion
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
         
-        // this is for the aplication's path where is the .plist file with all the info 
+        // ruta donde esta el archivo de la base de datos de realm, se abre con realm browser
+        print(Realm.Configuration.defaultConfiguration.fileURL)
+ 
+        do{
+            let realm = try Realm()
+            
+        }catch{
+            print("Error Initializing new realm, \(error)")
+        }
         
         
         return true
