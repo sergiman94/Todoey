@@ -9,7 +9,7 @@
 import UIKit
 import RealmSwift
 
-class TodoListViewController: UITableViewController {
+class TodoListViewController: SwipeTableViewController {
     
     
     var todoItems : Results<Item>?
@@ -41,8 +41,7 @@ class TodoListViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         
-        // seleccion de cada celda con el identificador (se estan reutilizando las celdas)
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
+       let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
         // cada item de la lista
         if let item = todoItems?[indexPath.row] {
@@ -67,8 +66,6 @@ class TodoListViewController: UITableViewController {
             
             cell.textLabel?.text = "No Items Added"
         }
-        
-        
         
         return cell
         
@@ -164,6 +161,18 @@ class TodoListViewController: UITableViewController {
         
         tableView.reloadData()
         
+    }
+    
+    override func updateDataModel(at indexpath: IndexPath) {
+        if let item = todoItems?[indexpath.row] {
+            do{
+                try realm.write {
+                    realm.delete(item)
+                }
+            }catch{
+                print("Error deleting itme, \(error)" )
+            }
+        }
     }
     
 }
